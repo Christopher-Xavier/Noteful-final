@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import ErrorBoundary from './ErrorBoundary'
+import ErrorBoundary from '../ErrorBoundary'
 import PropTypes from 'prop-types';
-
+import '../App/App.css';
+import config from '../config'
 export default class AddFolder extends Component {
     constructor(props){
         super(props);
@@ -27,20 +28,17 @@ export default class AddFolder extends Component {
         }
       }
 
-      handleSubmit = e => {
+      handleAddFolderSubmit = e => {
         e.preventDefault()
         // get the form fields from the event
-        const { title, url, description, rating } = e.target
-        const bookmark = {
-          title: title.value,
-          url: url.value,
-          description: description.value,
-          rating: Number(rating.value),
+        const { folderName } = e.target
+        const folder = {
+          folderName: folderName.value
         }
         this.setState({ error: null })
         fetch(config.API_ENDPOINT, {
           method: 'POST',
-          body: JSON.stringify(bookmark),
+          body: JSON.stringify(folder),
           headers: {
             'content-type': 'application/json',
             'authorization': `bearer ${config.API_KEY}`
@@ -53,7 +51,7 @@ export default class AddFolder extends Component {
             return res.json()
           })
           .then(data => {
-            folderName.value = ''
+            this.folderName.value = ''
             this.context.addFolder(data)
             this.props.history.push('/')
           })
@@ -71,24 +69,39 @@ export default class AddFolder extends Component {
         const folderNameError = this.validateFolderName();
         return (
             <div>
-                <form className="add-folder-form" onSubmit={e => this.handleAddFolderSubmit(e)}>
+              <form className="add-folder-form" onSubmit={e => this.handleAddFolderSubmit(e)}>
                 <h2>Add Folder</h2>
-                <div className="add-folder-hint">* required field</div>  
+
+                <div className="add-folder-hint">* required field</div>
+
                 <div className="form-group">
+
                 <label htmlFor="folder-name">Folder Name *</label>
-                <input type="text" className="folder-name" name="folder-name" id="folder-name" onChange={e => this.props.updateFolderName(e.target.value)} defaultValue="folder name" />
+                <input type="text" className="folder-name" name="folder-name" id="folder-name" onChange={e => this.updateFolderName(e.target.value)} defaultValue="Untitled" />
+
                 <ErrorBoundary message={folderNameError}/>
                 {this.state.folderName.touched && <ErrorBoundary message={this.validateFolderName} />}
                 </div>
-                </form>
-            </div>
+
+                <div className='save-and-cancel-buttons'>
+                <button type='button' onClick={this.handleClickCancel}> Cancel </button>
+                {' '}
+                <button type='submit'> Save </button>
+                </div>
+              
+              </form>
+          </div>
         )
     }
 }
 
+// AddFolder.propTypes = {
+//   folderName: {
+//       value: PropTypes.string.isRequired}
+// };
+
 AddFolder.propTypes = {
-  folderName: {
-      value: PropTypes.string.isRequired}
+  value: PropTypes.string.isRequired
 };
 
   

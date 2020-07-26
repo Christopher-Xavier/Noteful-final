@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
 import {Route, Link} from 'react-router-dom';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import AddFolder from './Addfolder/AddFolder'
-import AddNote from './AddNote/AddNote'
+import AddFolder from '../AddFolder/AddFolder'
+import AddNote from '../AddNote/AddNote'
 import NoteListNav from '../NoteListNav/NoteListNav';
 import NotePageNav from '../NotePageNav/NotePageNav';
 import NoteListMain from '../NoteListMain/NoteListMain';
@@ -14,7 +14,8 @@ import './App.css';
 class App extends Component {
     state = {
         notes: [],
-        folders: []
+        folders: [],
+        error: {}
     };
 
     componentDidMount() {
@@ -49,8 +50,8 @@ class App extends Component {
                         return <NotePageNav {...routeProps} folder={folder} />;
                     }}
                 />
-                <Route path="/add-folder" component={NotePageNav} />
-                <Route path="/add-note" component={NotePageNav} />
+                <Route exact path="/add-folder" component={AddFolder} />
+                <Route path="/add-note" component={AddNote} />
             </>
         );
     }
